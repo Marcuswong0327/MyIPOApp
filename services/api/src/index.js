@@ -1,8 +1,11 @@
 import 'dotenv/config';
 import express from 'express';
 import { authMiddleware } from './auth.js';
+import { marketRouter } from './routes/market.js';
 import { newsRouter } from './routes/news.js';
 import { reportsRouter } from './routes/reports.js';
+import { searchRouter } from './routes/search.js';
+import { stockRouter } from './routes/stock.js';
 
 const app = express();
 app.use(express.json({ limit: '1mb' }));
@@ -12,6 +15,9 @@ app.get('/healthz', (_req, res) => {
 });
 
 app.use('/v1/reports', authMiddleware, reportsRouter);
+app.use('/v1/search', authMiddleware, searchRouter);
+app.use('/v1/stock', authMiddleware, stockRouter);
+app.use('/v1/market', authMiddleware, marketRouter);
 app.use('/v1/news', authMiddleware, newsRouter);
 
 app.use((err, _req, res, _next) => {

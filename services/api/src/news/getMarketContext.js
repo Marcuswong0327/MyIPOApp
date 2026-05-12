@@ -1,5 +1,5 @@
 import { getJson, setJson } from '../cache/upstash.js';
-import { fetchNewsRaw, fetchQuoteRaw, normalizeNews, normalizeQuote } from './rapidapi.js';
+import { fetchLegacyNewsRaw, fetchQuoteRaw, normalizeNews, normalizeQuote } from './rapidapi.js';
 import { resolveTicker } from './resolveTicker.js';
 
 const QUOTE_TTL_SECONDS = 600;
@@ -26,7 +26,7 @@ export async function getMarketContext(query) {
   }
 
   if (!news) {
-    const newsRaw = await fetchNewsRaw(resolvedTicker);
+    const newsRaw = await fetchLegacyNewsRaw(resolvedTicker);
     news = normalizeNews(newsRaw, resolvedTicker);
     await setJson(newsKey, news, NEWS_TTL_SECONDS);
     newsCacheHit = false;

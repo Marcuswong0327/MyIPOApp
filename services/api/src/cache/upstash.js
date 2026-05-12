@@ -32,9 +32,19 @@ export async function getJson(key) {
 export async function setJson(key, value, ttlSeconds) {
   if (!hasConfig()) return false;
   try {
-    await callRedis(
-      `/setex/${encodeURIComponent(key)}/${ttlSeconds}/${encodeURIComponent(JSON.stringify(value))}`,
-    );
+    const body = JSON.stringify(value);
+    const url = `${redisUrl}/set/${encodeURIComponent(key)}?EX=${encodeURIComponent(String(ttlSeconds))}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${redisToken}`,
+        'Content-Type': 'application/json',
+      },
+      body,
+    });
+    if (!response.ok) {
+      throw new Error(`redis_http_${response.status}`);
+    }
     return true;
   } catch {
     return false;
