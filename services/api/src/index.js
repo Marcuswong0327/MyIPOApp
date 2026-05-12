@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import { authMiddleware } from './auth.js';
+import { newsRouter } from './routes/news.js';
 import { reportsRouter } from './routes/reports.js';
 
 const app = express();
@@ -11,6 +12,7 @@ app.get('/healthz', (_req, res) => {
 });
 
 app.use('/v1/reports', authMiddleware, reportsRouter);
+app.use('/v1/news', authMiddleware, newsRouter);
 
 app.use((err, _req, res, _next) => {
   const status = err.statusCode ?? 500;
